@@ -17,20 +17,22 @@ from PIL import Image
 from object_detection.utils import dataset_util
 
 flags = tf.app.flags
+#获取train和test的input路径（包含train_labels.csv与test_labels.csv文件）和output路径
 flags.DEFINE_string('csv_input', '', 'Path to the CSV input')
 flags.DEFINE_string('output_path', '', 'Path to output TFRecord')
 FLAGS = flags.FLAGS
 
-
+#将class转换成数字
 def class_text_to_int(row_label):
     if row_label == 'raccoon':
         return 1
     else:
         None
 
-
+#row是每一行csv的值，相应取出每一列的值，例如：filename
 def create_tf_example(row):
     full_path = os.path.join(os.getcwd(), 'images', '{}'.format(row['filename']))
+    #通过拼接起来的路径获取图片，将图片转换成Byte格式
     with tf.gfile.GFile(full_path, 'rb') as fid:
         encoded_jpg = fid.read()
     encoded_jpg_io = io.BytesIO(encoded_jpg)
@@ -43,9 +45,10 @@ def create_tf_example(row):
     xmaxs = [row['xmax'] / width]
     ymins = [row['ymin'] / height]
     ymaxs = [row['ymax'] / height]
-    classes_text = [row['class'].encode('utf8')]
-    classes = [class_text_to_int(row['class'])]
-
+    classes_text = [row['class'].encode('utf8')]   #class的文字格式（raccon）
+    classes = [class_text_to_int(row['class'])]    #class的数字格式 (1)
+    
+    #合成一个样本example
     tf_example = tf.train.Example(features=tf.train.Features(feature={
         'image/height': dataset_util.int64_feature(height),
         'image/width': dataset_util.int64_feature(width),
@@ -65,6 +68,7 @@ def create_tf_example(row):
 
 def main(_):
     writer = tf.python_io.TFRecordWriter(FLAGS.output_path)
+    #读取csv文件
     examples = pd.read_csv(FLAGS.csv_input)
     for index, row in examples.iterrows():
         tf_example = create_tf_example(row)

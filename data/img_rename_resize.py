@@ -15,15 +15,12 @@ if __name__=='__main__':
         os.mkdir('JPEGImages')
     if os.path.exists('Annotations') == False:
         os.mkdir('Annotations')
-    if os.path.exists('ImageSets') == False:
-        os.mkdir('ImageSets')
-        os.mkdir('ImageSets/Main')
     cnt = 1
     prename = "000000"
     for img in imgs:
         temp=cv2.imread(path+"\\images\\"+img)
         #os.remove(path+"\\images\\"+img)
-        temp=cv2.resize(temp,(500,500),CV_INTER_AREA) #重采样插值法
+        temp=cv2.resize(temp,(500,500),cv2.INTER_AREA) #重采样插值法
         cv2.imwrite(path+"\\JPEGImages\\"+prename[0:len(prename)-len(str(cnt))]+str(cnt)+".jpg",temp)
         print "renamed "+img+" to "+prename[0:len(prename)-len(str(cnt))]+str(cnt)+".jpg"
         cnt+=1

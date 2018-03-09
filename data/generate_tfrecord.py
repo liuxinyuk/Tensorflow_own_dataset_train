@@ -41,9 +41,9 @@ FLAGS = flags.FLAGS
 #将class转换成数字
 '''change here'''
 def class_text_to_int(row_label):
-    if row_label == 'drop_off':
+    if row_label == 'class1':
         return 1
-#    if row_label == 'i':
+#    if row_label == 'class2':
 #        return 2
     else:
         None
